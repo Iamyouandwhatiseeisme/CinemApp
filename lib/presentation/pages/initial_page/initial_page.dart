@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cinemapp/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -37,33 +38,48 @@ class _InitialPageState extends State<InitialPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.only(top: 28.0),
-              child: Text(
-                  'Please Specify the qualities of the movie you are looking for'),
-            ),
-            const SizedBox(height: 80),
-            const Text('Choose several genres'),
-            ChooseMovieTypes(
-              title: 'Please select desired genres',
-              selectedGenres: selectedGenres,
-              removeGenre: _removeGenre,
-              updateGenre: _updateSelectedGenres,
-            ),
-            DropdownMenu<Awards>(
-              initialSelection: Awards.any,
-              dropdownMenuEntries:
-                  Awards.values.map<DropdownMenuEntry<Awards>>((Awards awards) {
-                return DropdownMenuEntry<Awards>(
-                  value: awards,
-                  label: awards.name,
-                );
-              }).toList(),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20.0, right: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(top: 28.0),
+                child: Text(
+                    'Please Specify the qualities of the movie you are looking for'),
+              ),
+              const SizedBox(height: 20),
+              Divider(
+                thickness: 1,
+                color: Colors.white.withOpacity(0.5),
+              ),
+              const Text(
+                'Choose several genres',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              ChooseMovieTypes(
+                title: 'Please select desired genres',
+                selectedGenres: selectedGenres,
+                removeGenre: _removeGenre,
+                updateGenre: _updateSelectedGenres,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text(
+                'What about academy awards?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const CustomDropDownMenu(
+                options: Awards.values,
+                initialSelection: Awards.any,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -71,53 +87,6 @@ class _InitialPageState extends State<InitialPage> {
         tooltip: 'Find',
         child: const Icon(Icons.search),
       ),
-    );
-  }
-}
-
-class ChooseMovieTypes extends StatelessWidget {
-  const ChooseMovieTypes({
-    super.key,
-    required this.selectedGenres,
-    required this.removeGenre,
-    required this.updateGenre,
-    required this.title,
-  });
-
-  final List<Genre> selectedGenres;
-  final void Function(Genre, List<Genre>) removeGenre;
-  final void Function(List<Genre>) updateGenre;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(Radius.circular(5))),
-      width: MediaQuery.of(context).size.width,
-      height: 200,
-      child: MultiSelectDialogField(
-          chipDisplay: MultiSelectChipDisplay(
-            items:
-                selectedGenres.map((e) => MultiSelectItem(e, e.name)).toList(),
-            onTap: (value) {
-              removeGenre(value, selectedGenres);
-            },
-          ),
-          title: Text(
-            title,
-            style: const TextStyle(color: Colors.black),
-          ),
-          unselectedColor: Theme.of(context).colorScheme.primary,
-          backgroundColor: Colors.white,
-          items: Genre.values
-              .map((genre) => MultiSelectItem(genre,
-                  '${genre.name.characters.first.toUpperCase()}${genre.name.substring(1)}'))
-              .toList(),
-          onConfirm: (values) {
-            updateGenre(values);
-          }),
     );
   }
 }
