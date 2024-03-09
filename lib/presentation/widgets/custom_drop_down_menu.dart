@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../main.dart';
 
-class CustomDropDownMenu<T extends Enum> extends StatelessWidget {
-  final List<T> options;
-  final T initialSelection;
+class CustomDropDownMenu extends StatelessWidget {
+  final List<String> options;
+  final String initialSelection;
 
   const CustomDropDownMenu({
     super.key,
@@ -17,13 +17,13 @@ class CustomDropDownMenu<T extends Enum> extends StatelessWidget {
   Widget build(BuildContext context) {
     final StringManager stringManager = sl.get<StringManager>();
 
-    return DropdownMenu<T>(
+    return DropdownMenu<String>(
       initialSelection: initialSelection,
-      dropdownMenuEntries: options.map<DropdownMenuEntry<T>>(
-        (T option) {
-          return DropdownMenuEntry<T>(
+      dropdownMenuEntries: options.map<DropdownMenuEntry<String>>(
+        (String option) {
+          return DropdownMenuEntry<String>(
             value: option,
-            label: stringManager.toCaiptalize(option.name),
+            label: stringManager.toCaiptalize(option),
           );
         },
       ).toList(),

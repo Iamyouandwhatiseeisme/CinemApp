@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:cinemapp/presentation/presentation.dart';
@@ -18,6 +20,17 @@ class _InitialPageState extends State<InitialPage> {
   final TextEditingController movieLengthController = TextEditingController();
   final TextEditingController timePeriodController = TextEditingController();
   final TextEditingController prefferedActor = TextEditingController();
+
+  List<String> awards = [
+    Awards.any.value,
+    Awards.winner.value,
+    Awards.nominee.value
+  ];
+  List<String> mainActor = [
+    MainActorSex.any.value,
+    MainActorSex.female.value,
+    MainActorSex.male.value,
+  ];
 
   void _updateSelectedGenres(List<Genre> genres) {
     setState(() {
@@ -88,9 +101,9 @@ class _InitialPageState extends State<InitialPage> {
                   const SizedBox(
                     height: 5,
                   ),
-                  const CustomDropDownMenu(
-                    options: Awards.values,
-                    initialSelection: Awards.any,
+                  CustomDropDownMenu(
+                    options: awards,
+                    initialSelection: Awards.any.value,
                   ),
                   const SizedBox(
                     height: 5,
@@ -99,9 +112,9 @@ class _InitialPageState extends State<InitialPage> {
                     'Do you want the lead actor to be male or female?',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                  const CustomDropDownMenu(
-                      options: MainActorSex.values,
-                      initialSelection: MainActorSex.any),
+                  CustomDropDownMenu(
+                      options: mainActor,
+                      initialSelection: MainActorSex.any.value),
                   const SizedBox(
                     height: 5,
                   ),

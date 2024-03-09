@@ -3,6 +3,8 @@ enum Awards {
   nominee('Academy awards nominee'),
   any('N/A');
 
-  const Awards(this.value);
+  const Awards(
+    this.value,
+  );
   final String value;
 }
