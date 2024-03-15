@@ -6,4 +6,5 @@ import 'data.dart';
 void setUp() {
   sl.registerSingleton<NavigatorClient>(NavigatorClient());
   sl.registerSingleton<StringManager>(StringManager());
+  sl.registerSingleton<GeminiService>(GeminiService());
 }

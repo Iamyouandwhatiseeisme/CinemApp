@@ -1,32 +1,37 @@
+import 'package:cinemapp/bloc/cubit/floating_hint_text_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SimpleFormFieldWithController extends StatelessWidget {
+class SimpleFormFieldWithController extends StatefulWidget {
   final String hintText;
   const SimpleFormFieldWithController({
     super.key,
     required this.hintText,
-    required this.movieLengthController,
+    required this.textController,
   });
 
-  final TextEditingController movieLengthController;
+  final TextEditingController textController;
 
   @override
+  State<SimpleFormFieldWithController> createState() =>
+      _SimpleFormFieldWithControllerState();
+}
+
+class _SimpleFormFieldWithControllerState
+    extends State<SimpleFormFieldWithController> {
+  @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      triggerMode: TooltipTriggerMode.longPress,
-      message: hintText,
-      child: TextFormField(
-        controller: movieLengthController,
-        decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(5)),
-            focusedBorder: OutlineInputBorder(
+    return TextFormField(
+      controller: widget.textController,
+      decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.white),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            hintText: hintText),
-      ),
+              borderRadius: BorderRadius.circular(5)),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          hintText: widget.hintText),
     );
   }
 }

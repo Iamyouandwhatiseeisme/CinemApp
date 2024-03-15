@@ -1,9 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:ffi';
 
+import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
+import 'package:cinemapp/bloc/cubit/remote_data_base_messanger_cubit.dart';
+import 'package:cinemapp/bloc/cubit/remote_data_base_state.dart';
+import 'package:cinemapp/presentation/pages/initial_page/widgets/message_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cinemapp/presentation/presentation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../../../data/data.dart';
 
@@ -20,6 +26,8 @@ class _InitialPageState extends State<InitialPage> {
   final TextEditingController movieLengthController = TextEditingController();
   final TextEditingController timePeriodController = TextEditingController();
   final TextEditingController prefferedActor = TextEditingController();
+  final TextEditingController chatController = TextEditingController();
+  final ScrollController chatScrollController = ScrollController();
 
   List<String> awards = [
     Awards.any.value,
@@ -51,6 +59,8 @@ class _InitialPageState extends State<InitialPage> {
     prefferedActor.dispose();
     movieLengthController.dispose();
     timePeriodController.dispose();
+    chatController.dispose();
+    chatScrollController.dispose();
 
     super.dispose();
   }
@@ -61,88 +71,96 @@ class _InitialPageState extends State<InitialPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20),
-          child: SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.only(top: 28.0),
-                    child: Text(
-                        'Please Specify the qualities of the movie you are looking for'),
-                  ),
-                  const SizedBox(height: 20),
-                  Divider(
-                    thickness: 1,
-                    color: Colors.white.withOpacity(0.5),
-                  ),
-                  const Text(
-                    'Choose several genres',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                  ChooseMovieTypes(
-                    title: 'Please select desired genres',
-                    selectedGenres: selectedGenres,
-                    removeGenre: _removeGenre,
-                    updateGenre: _updateSelectedGenres,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  const Text(
-                    'What about academy awards?',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  CustomDropDownMenu(
-                    options: awards,
-                    initialSelection: Awards.any.value,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  const Text(
-                    'Do you want the lead actor to be male or female?',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                  CustomDropDownMenu(
-                      options: mainActor,
-                      initialSelection: MainActorSex.any.value),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SimpleFormFieldWithController(
-                      hintText: 'How long do you want the movie to be?',
-                      movieLengthController: movieLengthController),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SimpleFormFieldWithController(
-                      hintText:
-                          'From what time period do you want the movie to be? (please specify a decade)',
-                      movieLengthController: timePeriodController),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SimpleFormFieldWithController(
-                      hintText:
-                          'Preffered actor/actress? (please include full name)',
-                      movieLengthController: prefferedActor),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(top: 28.0),
+                child: Text(
+                    'Please Specify the qualities of the movie you are looking for'),
               ),
-            ),
+              const SizedBox(height: 20),
+              Divider(
+                thickness: 1,
+                color: Colors.white.withOpacity(0.5),
+              ),
+              const Text(
+                'Choose several genres',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              ChooseMovieTypes(
+                title: 'Please select desired genres',
+                selectedGenres: selectedGenres,
+                removeGenre: _removeGenre,
+                updateGenre: _updateSelectedGenres,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                'What about academy awards?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              CustomDropDownMenu(
+                options: awards,
+                initialSelection: Awards.any.value,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                'Do you want the lead actor to be male or female?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              CustomDropDownMenu(
+                  options: mainActor, initialSelection: MainActorSex.any.value),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                'How long do you want the movie to be?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              SimpleFormFieldWithController(
+                  hintText: 'Please specify in minutes',
+                  textController: movieLengthController),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                'From what time period?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              SimpleFormFieldWithController(
+                  hintText: 'Please specify a decade',
+                  textController: timePeriodController),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                'Preffered actor/actress? (please include full name)',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              SimpleFormFieldWithController(
+                  hintText: 'Please include full name',
+                  textController: prefferedActor),
+            ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
+              .sendChatMessage(
+                  'Please list me 10 movies that star Leonardo Dicaprio');
+        },
         tooltip: 'Find',
         child: const Icon(Icons.search),
       ),
