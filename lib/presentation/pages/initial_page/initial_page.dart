@@ -157,9 +157,10 @@ class _InitialPageState extends State<InitialPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
+          await BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
               .sendChatMessage(
                   'Please list me 10 movies that star Leonardo Dicaprio');
+          Navigator.pushNamed(context, NavigatorClient.chatScreen);
         },
         tooltip: 'Find',
         child: const Icon(Icons.search),

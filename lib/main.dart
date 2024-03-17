@@ -27,9 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => RemoteDataBaseInitiate()..update(),
-        ),
+        BlocProvider(create: (context) => RemoteDataBaseInitiate()..initiate()),
         BlocProvider(
           create: (context) => RemoteDataBaseMessangerCubit(),
         ),

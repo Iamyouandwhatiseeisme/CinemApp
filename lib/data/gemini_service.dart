@@ -7,6 +7,10 @@ class GeminiService {
       GenerativeModel(model: 'gemini-pro', apiKey: dotenv.env['API_KEY']!);
   late final ChatSession chat;
 
+  GeminiService() {
+    init();
+  }
+
   void init() {
     try {
       chat = _model.startChat();

@@ -8,10 +8,9 @@ import 'remote_data_base_state.dart';
 class RemoteDataBaseInitiate extends Cubit<RemoteDataBaseState> {
   RemoteDataBaseInitiate() : super(RemoteDataBaseInitial());
   final geminiService = sl.get<GeminiService>();
-  void update() {
+  void initiate() {
     emit(RemoteDatabaseLoading());
     try {
-      geminiService.init();
       emit(RemoteDatabaseLoaded(chat: geminiService.chat));
     } on Exception catch (e) {
       emit(RemoteDatabaseError(errorMessage: e));
