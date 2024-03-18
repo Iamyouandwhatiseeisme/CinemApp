@@ -6,11 +6,13 @@ import '../../main.dart';
 class CustomDropDownMenu extends StatelessWidget {
   final List<String> options;
   final String initialSelection;
+  final TextEditingController controller;
 
   const CustomDropDownMenu({
     super.key,
     required this.options,
     required this.initialSelection,
+    required this.controller,
   });
 
   @override
@@ -18,6 +20,7 @@ class CustomDropDownMenu extends StatelessWidget {
     final StringManager stringManager = sl.get<StringManager>();
 
     return DropdownMenu<String>(
+      controller: controller,
       initialSelection: initialSelection,
       dropdownMenuEntries: options.map<DropdownMenuEntry<String>>(
         (String option) {

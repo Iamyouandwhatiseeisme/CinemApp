@@ -1,15 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:ffi';
 
-import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
 import 'package:cinemapp/bloc/cubit/remote_data_base_messanger_cubit.dart';
-import 'package:cinemapp/bloc/cubit/remote_data_base_state.dart';
-import 'package:cinemapp/presentation/pages/initial_page/widgets/message_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cinemapp/presentation/presentation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../../../data/data.dart';
 
@@ -26,8 +21,8 @@ class _InitialPageState extends State<InitialPage> {
   final TextEditingController movieLengthController = TextEditingController();
   final TextEditingController timePeriodController = TextEditingController();
   final TextEditingController prefferedActor = TextEditingController();
-  final TextEditingController chatController = TextEditingController();
-  final ScrollController chatScrollController = ScrollController();
+  final TextEditingController mainActorSex = TextEditingController();
+  final TextEditingController prefferedAwards = TextEditingController();
 
   List<String> awards = [
     Awards.any.value,
@@ -59,8 +54,8 @@ class _InitialPageState extends State<InitialPage> {
     prefferedActor.dispose();
     movieLengthController.dispose();
     timePeriodController.dispose();
-    chatController.dispose();
-    chatScrollController.dispose();
+    mainActorSex.dispose();
+    prefferedAwards.dispose();
 
     super.dispose();
   }
@@ -109,6 +104,7 @@ class _InitialPageState extends State<InitialPage> {
                 height: 5,
               ),
               CustomDropDownMenu(
+                controller: prefferedAwards,
                 options: awards,
                 initialSelection: Awards.any.value,
               ),
@@ -120,7 +116,9 @@ class _InitialPageState extends State<InitialPage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
               CustomDropDownMenu(
-                  options: mainActor, initialSelection: MainActorSex.any.value),
+                  controller: mainActorSex,
+                  options: mainActor,
+                  initialSelection: MainActorSex.any.value),
               const SizedBox(
                 height: 5,
               ),
@@ -159,8 +157,12 @@ class _InitialPageState extends State<InitialPage> {
         onPressed: () async {
           await BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
               .sendChatMessage(
-                  'Please list me 10 movies that star Leonardo Dicaprio');
-          Navigator.pushNamed(context, NavigatorClient.chatScreen);
+            'Please list me 10 movies that star ${prefferedActor.text} and is from ${timePeriodController.text} is ${movieLengthController.text} maximum minutes long and prefferably stars a main character of ${mainActorSex.text} gender,${prefferedAwards.text} and is ${selectedGenres.toList()} ',
+          );
+
+          if (context.mounted) {
+            Navigator.pushNamed(context, NavigatorClient.chatScreen);
+          }
         },
         tooltip: 'Find',
         child: const Icon(Icons.search),
