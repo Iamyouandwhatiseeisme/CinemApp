@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cinemapp/bloc/cubits.dart';
 import 'package:cinemapp/presentation/presentation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController chatScrollController = ScrollController();
   final TextEditingController chatController = TextEditingController();
+  List<String> tmdbIds = [];
+  List<String> movieDataList = [];
 
   @override
   void dispose() {
@@ -44,13 +45,31 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollDown();
   }
 
+  List<String> extractTmdbIds(List<String> data) {
+    final tmdbIds = <String>[];
+    for (final movie in data) {
+      final parts = movie.split('-');
+      for (final part in parts) {
+        if (part.trim().contains('TMDB ID')) {
+          final id = part.trim().split(':').last;
+          print(id);
+          tmdbIds.add(id);
+          break; // Stop searching after finding TMDB ID
+        }
+      }
+    }
+    return tmdbIds;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              BlocProvider.of<RemoteDataBaseInitiate>(context).resetChat();
+              Navigator.pushReplacementNamed(
+                  context, NavigatorClient.initialPage);
             },
             child: const Icon(Icons.arrow_back)),
       ),
@@ -58,72 +77,51 @@ class _ChatScreenState extends State<ChatScreen> {
           RemoteDataBaseMessangerState>(
         listener: (context, state) {
           if (state is RemoteDataBaseMessangerLoaded) {
-            BlocProvider.of<RemoteDataBaseInitiate>(context).initiate();
+            print('updating');
+            BlocProvider.of<RemoteDataBaseInitiate>(context).update();
           }
         },
-        child: BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
-          builder: (context, state) {
-            if (state is RemoteDatabaseLoaded) {
-              return Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: state.chat.history.length,
-                        controller: chatScrollController,
-                        itemBuilder: (context, id) {
-                          final content = state.chat.history.toList()[id];
-                          final text = content.parts
-                              .whereType<TextPart>()
-                              .map<String>((e) => e.text)
-                              .join('');
-
-                          // return Expanded(
-                          //   child: content.role == 'user'
-                          // ? MessageWidget(
-                          //           text: text,
-                          //           isFromUser: content.role == 'user',
-                          //         )
-                          //       : Flexible(
-                          //           child: Container(
-                          //             constraints:
-                          //                 const BoxConstraints(maxWidth: 600),
-                          //             decoration: BoxDecoration(
-                          //               color: Theme.of(context)
-                          //                   .colorScheme
-                          //                   .secondary,
-                          //               borderRadius: BorderRadius.circular(10),
-                          //             ),
-                          //             child: Padding(
-                          //               padding: const EdgeInsets.all(10.0),
-                          //               child: AnimatedTextKit(
-                          //                   totalRepeatCount: 1,
-                          //                   displayFullTextOnTap: true,
-                          //                   repeatForever: false,
-                          //                   animatedTexts: [
-                          //                     TyperAnimatedText(text.trim())
-                          //                   ]),
-                          //             ),
-                          //           ),
-                          //         ),
-                          // );
-                          // return Expanded(
-                          return MessageWidget(
-                            text: text,
-                            isFromUser: content.role == 'user',
-                          );
-                          // );
-                        }),
-                  ),
-                  ChatTextField(
-                    chatController: chatController,
-                    onSubmitted: () => sendMessage(),
-                  ),
-                ],
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
+        child: BlocListener<RemoteDataBaseInitiate, RemoteDataBaseState>(
+          listener: (context, state) {
+            if (state is RemoteDatabaseLoaded) {}
           },
+          child: BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
+            builder: (context, state) {
+              if (state is RemoteDatabaseLoaded) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: state.chat.history.length,
+                          controller: chatScrollController,
+                          itemBuilder: (context, id) {
+                            state.chat.history.length;
+                            final content = state.chat.history.toList()[id];
+                            final movieData = content.parts
+                                .whereType<TextPart>()
+                                .map<String>((e) => e.text)
+                                .join('');
+                            movieDataList = movieData.split('\n');
+                            tmdbIds = extractTmdbIds(movieDataList);
+
+                            print(tmdbIds);
+                            return MessageWidget(
+                              text: movieData,
+                              isFromUser: content.role == 'user',
+                            );
+                          }),
+                    ),
+                    ChatTextField(
+                      chatController: chatController,
+                      onSubmitted: () => sendMessage(),
+                    ),
+                  ],
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -158,9 +156,9 @@ class ChatTextField extends StatelessWidget {
             ),
           ),
         ),
-        BlocBuilder<RemoteDataBaseMessangerCubit, RemoteDataBaseMessangerState>(
+        BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
           builder: (context, state) {
-            if (state is RemoteDataBaseMessangerLoaded) {
+            if (state is RemoteDatabaseLoaded) {
               return IconButton(
                 onPressed: () async {
                   onSubmitted();

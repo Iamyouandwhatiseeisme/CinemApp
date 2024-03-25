@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
 import 'package:cinemapp/bloc/cubit/remote_data_base_messanger_cubit.dart';
 import 'package:flutter/material.dart';
 
@@ -18,11 +19,18 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
-  final TextEditingController movieLengthController = TextEditingController();
-  final TextEditingController timePeriodController = TextEditingController();
-  final TextEditingController prefferedActor = TextEditingController();
-  final TextEditingController mainActorSex = TextEditingController();
-  final TextEditingController prefferedAwards = TextEditingController();
+  final TextEditingController movieLengthController =
+      TextEditingController(text: 'Any');
+  final TextEditingController timePeriodController =
+      TextEditingController(text: 'Any time period');
+  final TextEditingController prefferedActor = TextEditingController(
+    text: 'Any Actor',
+  );
+  final TextEditingController mainActorSex =
+      TextEditingController(text: 'Any gender');
+  final TextEditingController prefferedAwards =
+      TextEditingController(text: 'Doesn\' matter');
+  late final GeminiService? geminiService;
 
   List<String> awards = [
     Awards.any.value,
@@ -34,6 +42,13 @@ class _InitialPageState extends State<InitialPage> {
     MainActorSex.female.value,
     MainActorSex.male.value,
   ];
+
+  @override
+  void initState() {
+    BlocProvider.of<RemoteDataBaseInitiate>(context).initiate();
+
+    super.initState();
+  }
 
   void _updateSelectedGenres(List<Genre> genres) {
     setState(() {
@@ -155,13 +170,26 @@ class _InitialPageState extends State<InitialPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
-              .sendChatMessage(
-            'Please list me 10 movies that star ${prefferedActor.text} and is from ${timePeriodController.text} is ${movieLengthController.text} maximum minutes long and prefferably stars a main character of ${mainActorSex.text} gender,${prefferedAwards.text} and is ${selectedGenres.toList()} ',
+          await BlocProvider.of<RemoteDataBaseInitiate>(context)
+              .sendInitialChatMessage(
+            prefferedActor: prefferedActor.text,
+            movieLength: movieLengthController.text,
+            timePeriod: timePeriodController.text,
+            selectedGenres: selectedGenres.toList(),
+            mainActorSex: mainActorSex.text,
+            prefferedAwards: prefferedAwards.text,
           );
 
+          prefferedActor.clear();
+          movieLengthController.clear();
+          timePeriodController.clear();
+          mainActor.clear();
+          selectedGenres = [];
+          mainActorSex.clear();
+          prefferedAwards.clear();
+
           if (context.mounted) {
-            Navigator.pushNamed(context, NavigatorClient.chatScreen);
+            Navigator.pushReplacementNamed(context, NavigatorClient.chatScreen);
           }
         },
         tooltip: 'Find',

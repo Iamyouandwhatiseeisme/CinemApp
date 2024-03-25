@@ -1,6 +1,8 @@
-import 'package:cinemapp/bloc/cubit/floating_hint_text_cubit.dart';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../data/enum/genre.dart';
 
 class SimpleFormFieldWithController extends StatefulWidget {
   final String hintText;

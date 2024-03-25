@@ -48,7 +48,7 @@ class ChooseMovieTypes extends StatelessWidget {
           backgroundColor: Colors.white,
           items: Genre.values
               .map((genre) => MultiSelectItem(
-                  genre, stringManager.toCaiptalize(genre.name)))
+                  genre, stringManager.toCaiptalize(genre.value)))
               .toList(),
           onConfirm: (values) {
             updateGenre(values);
