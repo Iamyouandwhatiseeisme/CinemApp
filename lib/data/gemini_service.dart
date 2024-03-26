@@ -15,7 +15,7 @@ class GeminiService {
     try {
       chat = _model.startChat();
     } on Exception catch (e) {
-      rethrow;
+      throw (Exception(e));
     }
   }
 

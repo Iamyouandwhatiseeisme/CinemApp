@@ -12,7 +12,6 @@ class RemoteDataBaseMessangerCubit extends Cubit<RemoteDataBaseMessangerState> {
     emit(RemoteDataBaseMessangerLoading());
     try {
       final text = await geminiservice.sendChatMessage(message);
-      print('print: $text');
       emit(RemoteDataBaseMessangerLoaded(text: text));
     } on Exception catch (e) {
       emit(RemoteDataBaseMessangerError(errorMessage: e));

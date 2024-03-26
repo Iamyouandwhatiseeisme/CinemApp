@@ -2,7 +2,6 @@ import 'package:cinemapp/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import '../../../../data/data.dart';
 import '../../../../main.dart';
 
 class ChooseMovieTypes extends StatelessWidget {

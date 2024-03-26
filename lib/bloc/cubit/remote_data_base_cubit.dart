@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:cinemapp/data/data.dart';
-import 'package:cinemapp/data/gemini_service.dart';
 import 'package:cinemapp/main.dart';
 
 import 'remote_data_base_state.dart';

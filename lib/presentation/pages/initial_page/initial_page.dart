@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
-import 'package:cinemapp/bloc/cubit/remote_data_base_messanger_cubit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cinemapp/presentation/presentation.dart';

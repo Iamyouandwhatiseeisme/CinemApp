@@ -52,7 +52,6 @@ class _ChatScreenState extends State<ChatScreen> {
       for (final part in parts) {
         if (part.trim().contains('TMDB ID')) {
           final id = part.trim().split(':').last;
-          print(id);
           tmdbIds.add(id);
           break; // Stop searching after finding TMDB ID
         }
@@ -77,14 +76,11 @@ class _ChatScreenState extends State<ChatScreen> {
           RemoteDataBaseMessangerState>(
         listener: (context, state) {
           if (state is RemoteDataBaseMessangerLoaded) {
-            print('updating');
             BlocProvider.of<RemoteDataBaseInitiate>(context).update();
           }
         },
         child: BlocListener<RemoteDataBaseInitiate, RemoteDataBaseState>(
-          listener: (context, state) {
-            if (state is RemoteDatabaseLoaded) {}
-          },
+          listener: (context, state) {},
           child: BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
             builder: (context, state) {
               if (state is RemoteDatabaseLoaded) {
@@ -95,19 +91,22 @@ class _ChatScreenState extends State<ChatScreen> {
                           itemCount: state.chat.history.length,
                           controller: chatScrollController,
                           itemBuilder: (context, id) {
-                            state.chat.history.length;
                             final content = state.chat.history.toList()[id];
-                            final movieData = content.parts
+                            final text = content.parts
                                 .whereType<TextPart>()
                                 .map<String>((e) => e.text)
                                 .join('');
-                            movieDataList = movieData.split('\n');
+                            movieDataList = text.split('\n');
+                            Future.delayed(const Duration(seconds: 2));
                             tmdbIds = extractTmdbIds(movieDataList);
 
-                            print(tmdbIds);
-                            return MessageWidget(
-                              text: movieData,
-                              isFromUser: content.role == 'user',
+                            return BlocProvider(
+                              create: (context) => FetchMoviesCubit(),
+                              child: MessageWidget(
+                                movieListTMDBIDs: tmdbIds,
+                                text: text,
+                                isFromUser: content.role == 'user',
+                              ),
                             );
                           }),
                     ),
@@ -124,56 +123,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ChatTextField extends StatelessWidget {
-  const ChatTextField({
-    super.key,
-    required this.chatController,
-    required this.onSubmitted,
-  });
-  final Function onSubmitted;
-  final TextEditingController chatController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            onFieldSubmitted: (_) => onSubmitted(),
-            controller: chatController,
-            decoration: InputDecoration(
-              hintText: 'Enter any further information',
-              border: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(15)),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
-          ),
-        ),
-        BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
-          builder: (context, state) {
-            if (state is RemoteDatabaseLoaded) {
-              return IconButton(
-                onPressed: () async {
-                  onSubmitted();
-                },
-                icon: Icon(
-                  Icons.send,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
-        ),
-      ],
     );
   }
 }

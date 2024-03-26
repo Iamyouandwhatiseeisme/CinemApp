@@ -1,8 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-
-import '../../data/enum/genre.dart';
 
 class SimpleFormFieldWithController extends StatefulWidget {
   final String hintText;
