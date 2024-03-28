@@ -1,11 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cinemapp/bloc/cubits.dart';
 import 'package:cinemapp/data/models/movie.dart';
 import 'package:cinemapp/presentation/presentation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class PostersScreen extends StatefulWidget {
   const PostersScreen({super.key});
@@ -45,15 +43,29 @@ class _PostersScreenState extends State<PostersScreen> {
                   print(state);
 
                   if (state is FetchMoviesLoaded) {
-                    return ListView.builder(
+                    return CarouselSlider.builder(
                       itemCount: state.movieModels.length,
-                      itemBuilder: (context, id) {
-                        final movieModel = state.movieModels[id];
-                        final posterPath = state.movieModels[id].posterPath;
+                      options: CarouselOptions(
+                          height: 300,
+                          autoPlay: false,
+                          viewportFraction: 0.55,
+                          enlargeCenterPage: true,
+                          pageSnapping: true),
+                      itemBuilder: (context, itemIndex, pageViewId) {
+                        late String poster;
+                        final movieModel = state.movieModels[itemIndex];
+                        final posterPath =
+                            state.movieModels[itemIndex].posterPath;
+                        posterPath != null
+                            ? poster =
+                                'https://image.tmdb.org/t/p/original/$posterPath'
+                            : poster = 'assets/images/No_Image_Available.jpg';
+                        print(posterPath);
+                        print('loaded');
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PosterCard(
-                              posterPath: posterPath, movieModel: movieModel),
+                              posterPath: poster, movieModel: movieModel),
                         );
                       },
                     );
@@ -107,7 +119,7 @@ class PosterCard extends StatelessWidget {
                 return SizedBox(
                   width: 400,
                   child: Image.network(
-                    'https://image.tmdb.org/t/p/original/$posterPath',
+                    posterPath!,
                     loadingBuilder: (BuildContext context, Widget child,
                         ImageChunkEvent? loadingProgress) {
                       if (loadingProgress == null) {
@@ -124,22 +136,20 @@ class PosterCard extends StatelessWidget {
                   ),
                 );
               } else {
-                return SizedBox(
-                    width: 400,
-                    child: Image.asset('assets/images/No_Image_Available.jpg'));
+                return SizedBox(width: 400, child: Image.asset(posterPath!));
               }
             }),
-            CircularPercentIndicator(
-                radius: 25,
-                lineWidth: 5.0,
-                animation: true,
-                percent: movieModel.voteAverage! * 0.1,
-                center: Text(
-                  "${movieModel.voteAverage!.ceilToDouble() * 10}%",
-                  style: const TextStyle(fontSize: 10),
-                ),
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: Colors.green)
+            // CircularPercentIndicator(
+            //     radius: 25,
+            //     lineWidth: 5.0,
+            //     animation: true,
+            //     percent: movieModel.voteAverage! * 0.1,
+            //     center: Text(
+            //       "${movieModel.voteAverage!.ceilToDouble() * 10}%",
+            //       style: const TextStyle(fontSize: 10),
+            //     ),
+            //     circularStrokeCap: CircularStrokeCap.round,
+            //     progressColor: Colors.green)
           ],
         ),
       ),
