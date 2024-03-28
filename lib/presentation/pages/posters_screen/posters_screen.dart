@@ -51,7 +51,7 @@ class _PostersScreenState extends State<PostersScreen> {
                           viewportFraction: 0.55,
                           enlargeCenterPage: true,
                           pageSnapping: true),
-                      itemBuilder: (context, itemIndex, pageViewId) {
+                      itemBuilder: (context, itemIndex, countIndex) {
                         late String poster;
                         final movieModel = state.movieModels[itemIndex];
                         final posterPath =
