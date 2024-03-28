@@ -60,8 +60,7 @@ class _PostersScreenState extends State<PostersScreen> {
                             ? poster =
                                 'https://image.tmdb.org/t/p/original/$posterPath'
                             : poster = 'assets/images/No_Image_Available.jpg';
-                        print(posterPath);
-                        print('loaded');
+
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PosterCard(
@@ -103,55 +102,32 @@ class PosterCard extends StatelessWidget {
             color: Colors.blueGrey,
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                movieModel.title!,
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+        child: Builder(builder: (context) {
+          if (posterPath != null) {
+            return SizedBox(
+              width: 400,
+              child: Image.network(
+                fit: BoxFit.fill,
+                posterPath!,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null),
+                  );
+                },
               ),
-            ),
-            Builder(builder: (context) {
-              if (posterPath != null) {
-                return SizedBox(
-                  width: 400,
-                  child: Image.network(
-                    posterPath!,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null),
-                      );
-                    },
-                  ),
-                );
-              } else {
-                return SizedBox(width: 400, child: Image.asset(posterPath!));
-              }
-            }),
-            // CircularPercentIndicator(
-            //     radius: 25,
-            //     lineWidth: 5.0,
-            //     animation: true,
-            //     percent: movieModel.voteAverage! * 0.1,
-            //     center: Text(
-            //       "${movieModel.voteAverage!.ceilToDouble() * 10}%",
-            //       style: const TextStyle(fontSize: 10),
-            //     ),
-            //     circularStrokeCap: CircularStrokeCap.round,
-            //     progressColor: Colors.green)
-          ],
-        ),
+            );
+          } else {
+            return SizedBox(width: 400, child: Image.asset(posterPath!));
+          }
+        }),
       ),
     );
   }
