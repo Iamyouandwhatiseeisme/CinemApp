@@ -39,25 +39,11 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void sendMessage() {
-    BlocProvider.of<RemoteDataBaseMessangerCubit>(context)
-        .sendChatMessage(chatController.text);
+    BlocProvider.of<RemoteDataBaseInitiate>(context)
+        .sendChatMessage(message: chatController.text);
+
     chatController.clear();
     _scrollDown();
-  }
-
-  List<String> extractTmdbIds(List<String> data) {
-    final tmdbIds = <String>[];
-    for (final movie in data) {
-      final parts = movie.split('-');
-      for (final part in parts) {
-        if (part.trim().contains('TMDB ID')) {
-          final id = part.trim().split(':').last;
-          tmdbIds.add(id);
-          break; // Stop searching after finding TMDB ID
-        }
-      }
-    }
-    return tmdbIds;
   }
 
   @override
@@ -92,17 +78,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           controller: chatScrollController,
                           itemBuilder: (context, id) {
                             final content = state.chat.history.toList()[id];
+
                             final text = content.parts
                                 .whereType<TextPart>()
                                 .map<String>((e) => e.text)
                                 .join('');
                             movieDataList = text.split('\n');
-                            Future.delayed(const Duration(seconds: 2));
-                            tmdbIds = extractTmdbIds(movieDataList);
 
                             return BlocProvider(
                               create: (context) => FetchMoviesCubit(),
                               child: MessageWidget(
+                                movieDataList: movieDataList,
                                 movieListTMDBIDs: tmdbIds,
                                 text: text,
                                 isFromUser: content.role == 'user',
@@ -117,7 +103,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 );
               } else {
-                return const CircularProgressIndicator();
+                print('Building');
+                return const Center(
+                  child: LinearProgressIndicator(
+                    semanticsLabel:
+                        'Please wait while gemini is loading your movies',
+                  ),
+                );
               }
             },
           ),

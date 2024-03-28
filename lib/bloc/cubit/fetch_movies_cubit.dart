@@ -12,24 +12,52 @@ class FetchMoviesCubit extends Cubit<FetchMoviesState> {
   FetchMoviesCubit() : super(FetchMoviesInitial());
 
   Future<List<MovieModel>> fetchMovies(
-      {required List<String> movieListTMDBIDs}) async {
+      {required List<String> moviesList}) async {
     List<MovieModel> movieModels = [];
-    print(movieListTMDBIDs.length);
+    print(moviesList.length);
 
     emit(FetchMoviesLoading());
-    for (final id in movieListTMDBIDs) {
+    for (final name in moviesList) {
+      print(name);
       String url =
-          'https://api.themoviedb.org/3/movie/$id?api_key=${Constants.apiKey}';
+          'https://api.themoviedb.org/3/search/movie?api_key=${Constants.apiKey}&query=$name';
       try {
         final response = await http.get(Uri.parse(url));
         if (response.statusCode == 200) {
-          final movie = MovieModel.fromJson(jsonDecode(response.body));
-          movieModels.add(movie);
-        } else {
-          return movieModels;
+          final data = json.decode(response.body);
+          final results = data['results'] as List;
+
+          final exactMatch = results.firstWhere(
+              (movie) => movie['title'].toLowerCase() == (name.toLowerCase()),
+              orElse: () => null);
+
+          if (exactMatch != null) {
+            try {
+              String url =
+                  'https://api.themoviedb.org/3/movie/${exactMatch['id'].toString()}?api_key=${Constants.apiKey}';
+              final response = await http.get(Uri.parse(url));
+              if (response.statusCode == 200) {
+                final movie = MovieModel.fromJson(jsonDecode(response.body));
+                movieModels.add(movie);
+              }
+            } catch (e) {
+              print(e.toString());
+              emit(
+                FetchMoviesError(
+                  errorMessage: e.toString(),
+                ),
+              );
+            }
+          }
         }
       } catch (e) {
-        emit(FetchMoviesError(errorMessage: e.toString()));
+        print(e.toString());
+
+        emit(
+          FetchMoviesError(
+            errorMessage: e.toString(),
+          ),
+        );
       }
     }
     if (movieModels.isNotEmpty) {

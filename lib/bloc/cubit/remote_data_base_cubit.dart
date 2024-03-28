@@ -47,7 +47,9 @@ class RemoteDataBaseInitiate extends Cubit<RemoteDataBaseState> {
       required String prefferedAwards,
       required List<Genre> selectedGenres}) async {
     final String message =
-        'Please provide me a list of 10 movies with these specifications: Preffered actor: $prefferedActor;\n time period: $timePeriod; \n length in minutes: $movieLength; \n preffered actor sex: $mainActorSex;\n preffered award/nominations: $prefferedAwards; \n genre(s): $selectedGenres; \n Please provide streaming service for each movie, if possible, provide TMDB movie id for each movie';
+        ''' Please provide me a list of 10 movies with these specifications: Preffered actor: $prefferedActor;\n time period: $timePeriod; \n length in minutes: $movieLength; \n preffered actor sex: $mainActorSex;\n preffered award/nominations: $prefferedAwards; \n genre(s): $selectedGenres; \n Please provide streaming service for each movie, fill this form with information: 
+        Title: Title PrefferedActor: PrefferedActor, TimePeriod: Timperiod and the rest of the fields accordingly;
+        ''';
 
     emit(RemoteDatabaseLoading());
     try {
@@ -63,6 +65,7 @@ class RemoteDataBaseInitiate extends Cubit<RemoteDataBaseState> {
     emit(RemoteDatabaseLoading());
     try {
       await geminiService.sendChatMessage(message);
+
       emit(RemoteDatabaseLoaded(chat: geminiService.chat));
     } on Exception catch (e) {
       emit(RemoteDatabaseError(errorMessage: e));
