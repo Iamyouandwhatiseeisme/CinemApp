@@ -57,9 +57,14 @@ class _MessageWidgetState extends State<MessageWidget> {
               ? Container(
                   constraints: const BoxConstraints(maxWidth: 600),
                   decoration: BoxDecoration(
-                    color: widget.isFromUser
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.secondary,
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomRight,
+                      end: Alignment.topLeft,
+                      colors: [
+                        Theme.of(context).colorScheme.surface,
+                        Theme.of(context).colorScheme.secondary
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -77,18 +82,28 @@ class _MessageWidgetState extends State<MessageWidget> {
                     color: Theme.of(context).colorScheme.secondary,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromARGB(255, 202, 202, 202)),
-                          height: 67,
-                          child: Column(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        end: Alignment.topLeft,
+                        colors: [
+                          Theme.of(context)
+                              .colorScheme
+                              .surface
+                              .withOpacity(0.5),
+                          Theme.of(context).colorScheme.secondary
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -125,54 +140,46 @@ class _MessageWidgetState extends State<MessageWidget> {
                               )
                             ],
                           ),
-                        ),
-                        // AnimatedTextKit(
-                        //   totalRepeatCount: 1,
-                        //   displayFullTextOnTap: true,
-                        //   repeatForever: false,
-                        //   animatedTexts: [
-                        //     TyperAnimatedText(widget.text.trim()),
-                        //   ],
-                        // ),
-                        Text(widget.text.trim()),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            final moviesList =
-                                await extractMovieNames(widget.movieDataList);
-                            if (context.mounted) {
-                              Navigator.pushNamed(
-                                context,
-                                NavigatorClient.postersScreen,
-                                arguments: PostersScreenPagePayload(
-                                    moviesList: moviesList),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'See posters',
-                            style: TextStyle(
-                                fontSize: 20,
-                                decoration: TextDecoration.underline),
+                          Text(widget.text.trim()),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            BlocProvider.of<RemoteDataBaseInitiate>(context)
-                                .sendChatMessage(
-                                    message:
-                                        'Repeat the answer with the previous prompt but with 10 other movies');
-                          },
-                          child: const Text(
-                            'See more',
-                            style: TextStyle(
-                                fontSize: 20,
-                                decoration: TextDecoration.underline),
+                          GestureDetector(
+                            onTap: () async {
+                              final moviesList =
+                                  await extractMovieNames(widget.movieDataList);
+                              if (context.mounted) {
+                                Navigator.pushNamed(
+                                  context,
+                                  NavigatorClient.postersScreen,
+                                  arguments: PostersScreenPagePayload(
+                                      moviesList: moviesList),
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'See posters',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  decoration: TextDecoration.underline),
+                            ),
                           ),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () async {
+                              BlocProvider.of<RemoteDataBaseInitiate>(context)
+                                  .sendChatMessage(
+                                      message:
+                                          'Repeat the answer with the previous prompt but with 10 other movies');
+                            },
+                            child: const Text(
+                              'See more',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

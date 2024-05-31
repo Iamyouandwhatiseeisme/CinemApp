@@ -46,8 +46,14 @@ class RemoteDataBaseInitiate extends Cubit<RemoteDataBaseState> {
       required String mainActorSex,
       required String prefferedAwards,
       required List<Genre> selectedGenres}) async {
+    List<String> listOfGenres = [];
+
+    for (final genre in selectedGenres) {
+      listOfGenres.add(genre.value);
+    }
+
     final String message =
-        ''' Please provide me a list of 10 movies with these specifications: Preffered actor: $prefferedActor;\n time period: $timePeriod; \n length in minutes: $movieLength; \n preffered actor sex: $mainActorSex;\n preffered award/nominations: $prefferedAwards; \n genre(s): $selectedGenres; \n Please provide streaming service for each movie, fill this form with information: 
+        ''' Please provide me a list of 10 movies with these specifications: Preffered actor: $prefferedActor;\n time period: $timePeriod; \n length in minutes: $movieLength; \n preffered actor sex: $mainActorSex;\n preffered award/nominations: $prefferedAwards; \n genre(s): $listOfGenres; \n Please provide streaming service for each movie, fill this form with information: 
         Title: Title PrefferedActor: PrefferedActor, TimePeriod: Timperiod and the rest of the fields accordingly;
         ''';
 

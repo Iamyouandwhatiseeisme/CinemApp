@@ -48,70 +48,95 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-            onTap: () {
-              BlocProvider.of<RemoteDataBaseInitiate>(context).resetChat();
-              Navigator.pushReplacementNamed(
-                  context, NavigatorClient.initialPage);
-            },
-            child: const Icon(Icons.arrow_back)),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
+          colors: [
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.secondary
+          ],
+        ),
       ),
-      body: BlocListener<RemoteDataBaseMessangerCubit,
-          RemoteDataBaseMessangerState>(
-        listener: (context, state) {
-          if (state is RemoteDataBaseMessangerLoaded) {
-            BlocProvider.of<RemoteDataBaseInitiate>(context).update();
-          }
-        },
-        child: BlocListener<RemoteDataBaseInitiate, RemoteDataBaseState>(
-          listener: (context, state) {},
-          child: BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
-            builder: (context, state) {
-              if (state is RemoteDatabaseLoaded) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: state.chat.history.length,
-                          controller: chatScrollController,
-                          itemBuilder: (context, id) {
-                            final content = state.chat.history.toList()[id];
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: [
+                  Theme.of(context).colorScheme.surface,
+                  Theme.of(context).colorScheme.secondary
+                ],
+              ),
+            ),
+          ),
+          leading: GestureDetector(
+              onTap: () {
+                BlocProvider.of<RemoteDataBaseInitiate>(context).resetChat();
+                Navigator.pushReplacementNamed(
+                    context, NavigatorClient.initialPage);
+              },
+              child: const Icon(Icons.arrow_back)),
+        ),
+        body: BlocListener<RemoteDataBaseMessangerCubit,
+            RemoteDataBaseMessangerState>(
+          listener: (context, state) {
+            if (state is RemoteDataBaseMessangerLoaded) {
+              BlocProvider.of<RemoteDataBaseInitiate>(context).update();
+            }
+          },
+          child: BlocListener<RemoteDataBaseInitiate, RemoteDataBaseState>(
+            listener: (context, state) {},
+            child: BlocBuilder<RemoteDataBaseInitiate, RemoteDataBaseState>(
+              builder: (context, state) {
+                if (state is RemoteDatabaseLoaded) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: state.chat.history.length,
+                            controller: chatScrollController,
+                            itemBuilder: (context, id) {
+                              final content = state.chat.history.toList()[id];
 
-                            final text = content.parts
-                                .whereType<TextPart>()
-                                .map<String>((e) => e.text)
-                                .join('');
-                            movieDataList = text.split('\n');
+                              final text = content.parts
+                                  .whereType<TextPart>()
+                                  .map<String>((e) => e.text)
+                                  .join('');
+                              movieDataList = text.split('\n');
 
-                            return BlocProvider(
-                              create: (context) => FetchMoviesCubit(),
-                              child: MessageWidget(
-                                movieDataList: movieDataList,
-                                movieListTMDBIDs: tmdbIds,
-                                text: text,
-                                isFromUser: content.role == 'user',
-                              ),
-                            );
-                          }),
+                              return BlocProvider(
+                                create: (context) => FetchMoviesCubit(),
+                                child: MessageWidget(
+                                  movieDataList: movieDataList,
+                                  movieListTMDBIDs: tmdbIds,
+                                  text: text,
+                                  isFromUser: content.role == 'user',
+                                ),
+                              );
+                            }),
+                      ),
+                      ChatTextField(
+                        chatController: chatController,
+                        onSubmitted: () => sendMessage(),
+                      ),
+                    ],
+                  );
+                } else {
+                  print('Building');
+                  return const Center(
+                    child: LinearProgressIndicator(
+                      semanticsLabel:
+                          'Please wait while gemini is loading your movies',
                     ),
-                    ChatTextField(
-                      chatController: chatController,
-                      onSubmitted: () => sendMessage(),
-                    ),
-                  ],
-                );
-              } else {
-                print('Building');
-                return const Center(
-                  child: LinearProgressIndicator(
-                    semanticsLabel:
-                        'Please wait while gemini is loading your movies',
-                  ),
-                );
-              }
-            },
+                  );
+                }
+              },
+            ),
           ),
         ),
       ),

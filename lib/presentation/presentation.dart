@@ -9,3 +9,4 @@ export 'pages/chat_screen/widgets/chat_text_field.dart';
 export 'widgets/page_payloads/posters_screen_page_payload.dart';
 export 'widgets/star_rating.dart';
 export 'widgets/star_icon.dart';
+export 'pages/posters_screen/widgets/poster_card.dart';
