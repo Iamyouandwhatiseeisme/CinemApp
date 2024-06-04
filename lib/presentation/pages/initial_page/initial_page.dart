@@ -125,10 +125,26 @@ class _InitialPageState extends State<InitialPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(top: 28.0),
-                        child: Text(
-                            'Please Specify the qualities of the movie you are looking for'),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 28.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 3,
+                                  color:
+                                      const Color.fromARGB(255, 41, 97, 124)),
+                              borderRadius: BorderRadius.circular(12),
+                              shape: BoxShape.rectangle),
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              'Please Specify the qualities of the movie you are looking for',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Divider(
@@ -229,14 +245,6 @@ class _InitialPageState extends State<InitialPage> {
                   setState(() {
                     _isProcessing = false;
                   });
-
-                  // prefferedActor.clear();
-                  // movieLengthController.clear();
-                  // timePeriodController.clear();
-                  // mainActor.clear();
-                  // selectedGenres = [];
-                  // mainActorSex.clear();
-                  // prefferedAwards.clear();
 
                   if (context.mounted) {
                     Navigator.pushReplacementNamed(

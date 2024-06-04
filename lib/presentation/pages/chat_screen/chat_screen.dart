@@ -127,7 +127,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   );
                 } else {
-                  print('Building');
                   return const Center(
                     child: LinearProgressIndicator(
                       semanticsLabel:

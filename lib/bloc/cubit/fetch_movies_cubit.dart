@@ -14,11 +14,9 @@ class FetchMoviesCubit extends Cubit<FetchMoviesState> {
   Future<List<MovieModel>> fetchMovies(
       {required List<String> moviesList}) async {
     List<MovieModel> movieModels = [];
-    print(moviesList.length);
 
     emit(FetchMoviesLoading());
     for (final name in moviesList) {
-      print(name);
       String url =
           'https://api.themoviedb.org/3/search/movie?api_key=${Constants.apiKey}&query=$name';
       try {
@@ -41,7 +39,6 @@ class FetchMoviesCubit extends Cubit<FetchMoviesState> {
                 movieModels.add(movie);
               }
             } catch (e) {
-              print(e.toString());
               emit(
                 FetchMoviesError(
                   errorMessage: e.toString(),
@@ -51,8 +48,6 @@ class FetchMoviesCubit extends Cubit<FetchMoviesState> {
           }
         }
       } catch (e) {
-        print(e.toString());
-
         emit(
           FetchMoviesError(
             errorMessage: e.toString(),

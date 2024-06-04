@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'presentation/presentation.dart';
 import 'presentation/themes/themes.dart';
@@ -14,7 +15,10 @@ import 'presentation/themes/themes.dart';
 final sl = GetIt.instance;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await dotenv.load(fileName: ".env");
+
   setUp();
   runApp(const MyApp());
 }
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
         create: (BuildContext context) => ThemeProvider(),
         child: Builder(builder: (context) {
           return MaterialApp(
-              title: 'Flutter Demo',
+              title: 'CinemAPP',
               theme:
                   context.watch<ThemeProvider>().currentTheme == AppTheme.dark
                       ? lightTheme

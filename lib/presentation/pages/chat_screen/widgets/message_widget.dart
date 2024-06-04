@@ -1,8 +1,8 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
-import 'package:cinemapp/bloc/cubit/remote_data_base_messanger_cubit.dart';
 import 'package:cinemapp/presentation/presentation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -130,6 +130,18 @@ class _MessageWidgetState extends State<MessageWidget> {
                                       const SizedBox(
                                         width: 50,
                                       ),
+                                      GestureDetector(
+                                        onTap: () => showDialog(
+                                            builder: (BuildContext context) {
+                                              return ReportDialog(
+                                                  reportedText: widget.text);
+                                            },
+                                            context: context),
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(right: 28.0),
+                                          child: Icon(Icons.flag),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393836934624",
+    "project_id": "cinemapp-7485f",
+    "storage_bucket": "cinemapp-7485f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393836934624:android:6bb7caff018a093b11a785",
+        "android_client_info": {
+          "package_name": "com.example.cinemapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrNB1OnNdw4HK9oitm4GqrVgVQa0gahuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

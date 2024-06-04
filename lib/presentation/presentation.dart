@@ -10,3 +10,4 @@ export 'widgets/page_payloads/posters_screen_page_payload.dart';
 export 'widgets/star_rating.dart';
 export 'widgets/star_icon.dart';
 export 'pages/posters_screen/widgets/poster_card.dart';
+export 'pages/report_page/report_dialog.dart';
