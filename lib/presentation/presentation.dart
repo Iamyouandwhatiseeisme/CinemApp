@@ -11,3 +11,4 @@ export 'widgets/star_rating.dart';
 export 'widgets/star_icon.dart';
 export 'pages/posters_screen/widgets/poster_card.dart';
 export 'pages/report_page/report_dialog.dart';
+export 'pages/initial_page/widgets/list_generating_animation.dart';

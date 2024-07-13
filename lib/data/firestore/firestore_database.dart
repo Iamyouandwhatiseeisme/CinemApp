@@ -16,7 +16,7 @@ class FireStoreDataBase {
         "timeStamp": FieldValue.serverTimestamp()
       });
     } on Exception catch (e) {
-      print(e);
+      throw Exception(e);
     }
   }
 }

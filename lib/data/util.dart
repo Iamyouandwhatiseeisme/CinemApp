@@ -21,4 +21,44 @@ class Util {
 
     return result;
   }
+
+  Future<List<String>> extractMovieNames(List<String> data) async {
+    final movieList = <String>[];
+    for (final movie in data) {
+      final parts = movie.split('-');
+      for (final part in parts) {
+        if (part.trim().contains('Title:** ')) {
+          final movieName = part.trim().split('** ').last;
+          movieList.add(movieName);
+          break; // Stop searching after finding TMDB ID
+        }
+        if (part.trim().contains('Title: ')) {
+          final movieName = part.trim().split('Title: ').last;
+          movieList.add(movieName);
+          break;
+        }
+      }
+    }
+    return movieList;
+  }
+
+  List<String> extractMovieName(List<String> data) {
+    final movieList = <String>[];
+    for (final movie in data) {
+      final parts = movie.split('-');
+      for (final part in parts) {
+        if (part.trim().contains('Title:** ')) {
+          final movieName = part.trim().split('** ').last;
+          movieList.add(movieName);
+          break; // Stop searching after finding TMDB ID
+        }
+        if (part.trim().contains('Title: ')) {
+          final movieName = part.trim().split('Title: ').last;
+          movieList.add(movieName);
+          break;
+        }
+      }
+    }
+    return movieList;
+  }
 }

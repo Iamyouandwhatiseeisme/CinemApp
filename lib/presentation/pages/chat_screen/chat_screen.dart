@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
+import '../../../data/data.dart';
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
     super.key,
@@ -109,9 +111,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                   .join('');
                               movieDataList = text.split('\n');
 
+                              final Util util = Util();
+                              final List<String> moviesList =
+                                  util.extractMovieName(movieDataList);
+
                               return BlocProvider(
                                 create: (context) => FetchMoviesCubit(),
                                 child: MessageWidget(
+                                  moviesList: moviesList,
                                   movieDataList: movieDataList,
                                   movieListTMDBIDs: tmdbIds,
                                   text: text,

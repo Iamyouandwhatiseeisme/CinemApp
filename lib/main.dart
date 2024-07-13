@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
         create: (BuildContext context) => ThemeProvider(),
         child: Builder(builder: (context) {
           return MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'CinemAPP',
               theme:
                   context.watch<ThemeProvider>().currentTheme == AppTheme.dark

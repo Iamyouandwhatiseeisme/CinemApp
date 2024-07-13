@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:393836934624:android:9db4ca5c2172d0d811a785",
+        "android_client_info": {
+          "package_name": "com.cinemapp.cinemapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrNB1OnNdw4HK9oitm4GqrVgVQa0gahuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:393836934624:android:6bb7caff018a093b11a785",
         "android_client_info": {
           "package_name": "com.example.cinemapp"

@@ -1,6 +1,5 @@
 import 'package:cinemapp/data/firestore/firestore_database.dart';
 import 'package:cinemapp/main.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ReportDialog extends StatefulWidget {
@@ -32,7 +31,6 @@ class _ReportDialogState extends State<ReportDialog> {
               child: const Text('Cancel')),
           TextButton(
               onPressed: () async {
-                print(controller.text);
                 await sl.get<FireStoreDataBase>().submitReport(
                     comment: controller.text, message: widget.reportedText);
                 if (context.mounted) {

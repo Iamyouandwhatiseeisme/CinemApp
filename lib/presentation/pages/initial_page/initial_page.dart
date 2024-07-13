@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cinemapp/bloc/cubit/remote_data_base_cubit.dart';
+import 'package:cinemapp/bloc/cubit/remote_data_base_state.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cinemapp/presentation/presentation.dart';
@@ -29,9 +29,10 @@ class _InitialPageState extends State<InitialPage> {
   final TextEditingController mainActorSex =
       TextEditingController(text: 'Any gender');
   final TextEditingController prefferedAwards =
-      TextEditingController(text: 'Doesn\' matter');
+      TextEditingController(text: 'Doesn\'t matter');
   late final GeminiService? geminiService;
   bool _isProcessing = false;
+  final Util util = Util();
 
   List<String> awards = [
     Awards.any.value,
@@ -42,6 +43,22 @@ class _InitialPageState extends State<InitialPage> {
     MainActorSex.any.value,
     MainActorSex.female.value,
     MainActorSex.male.value,
+  ];
+  List<String> movieLength = [
+    "Less than 1 hour",
+    "More than 1 hour & less than 2",
+    "More than 2 hours"
+  ];
+  List<String> timePeriods = [
+    "1940-1950",
+    "1950-1960",
+    "1960-1970",
+    "1970-1980",
+    "1980-1990",
+    "1990-2000",
+    "2000-2010",
+    "2010-2020",
+    "after 2020"
   ];
 
   @override
@@ -198,9 +215,11 @@ class _InitialPageState extends State<InitialPage> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500),
                       ),
-                      SimpleFormFieldWithController(
-                          hintText: 'Please specify in minutes',
-                          textController: movieLengthController),
+                      CustomDropDownMenu(
+                        controller: movieLengthController,
+                        options: movieLength,
+                        initialSelection: "Any",
+                      ),
                       const SizedBox(
                         height: 5,
                       ),
@@ -209,9 +228,10 @@ class _InitialPageState extends State<InitialPage> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500),
                       ),
-                      SimpleFormFieldWithController(
-                          hintText: 'Please specify a decade',
-                          textController: timePeriodController),
+                      CustomDropDownMenu(
+                          options: timePeriods,
+                          initialSelection: "Any time period",
+                          controller: timePeriodController),
                       const SizedBox(
                         height: 5,
                       ),
@@ -223,6 +243,9 @@ class _InitialPageState extends State<InitialPage> {
                       SimpleFormFieldWithController(
                           hintText: 'Please include full name',
                           textController: prefferedActor),
+                      const SizedBox(
+                        height: 100,
+                      )
                     ],
                   ),
                 ),
@@ -255,28 +278,7 @@ class _InitialPageState extends State<InitialPage> {
                 child: const Icon(Icons.search),
               ),
             )
-          : Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Center(
-                      child: LinearProgressIndicator(),
-                    ),
-                    AnimatedTextKit(
-                      displayFullTextOnTap: true,
-                      repeatForever: true,
-                      animatedTexts: [
-                        TyperAnimatedText(
-                            'Please wait while we generate your list...',
-                            textStyle: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          : const ListGeneratingAnimation(),
     );
   }
 }

@@ -20,6 +20,7 @@ class CustomDropDownMenu extends StatelessWidget {
     final StringManager stringManager = sl.get<StringManager>();
 
     return DropdownMenu<String>(
+      width: 300,
       controller: controller,
       initialSelection: initialSelection,
       dropdownMenuEntries: options.map<DropdownMenuEntry<String>>(
